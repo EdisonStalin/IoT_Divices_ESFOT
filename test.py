@@ -231,7 +231,7 @@ def addNewDevices(ip, portOpen, exist):
 if __name__ == "__main__":
     colorama.init()
     cabecera()
-    main()
+    #main()
 
     # Si se recibe un parámetro se comprobaran tantas direcciones ip como es parámetro (limitando a 1000)
     repeticiones=1#si usuario no ingresa ningun valor, por defecto es 100 direciones ip
