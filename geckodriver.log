@@ -1,0 +1,14 @@
+1623258011420	geckodriver	INFO	Listening on 127.0.0.1:49957
+1623258014466	mozrunner::runner	INFO	Running command: "C:\\Program Files\\Mozilla Firefox\\firefox.exe" "--marionette" "-foreground" "-no-remote" "-profile" "C:\\Users\\Dead\\AppData\\Local\\Temp\\rust_mozprofileXQPyt0"
+1623258015118	Marionette	INFO	Marionette enabled
+console.warn: SearchSettings: "get: No settings file exists, new profile?" (new NotFoundError("Could not open the file at C:\\Users\\Dead\\AppData\\Local\\Temp\\rust_mozprofileXQPyt0\\search.json.mozlz4", (void 0)))
+1623258017416	Marionette	INFO	Listening on port 49965
+1623258017946	Marionette	WARN	TLS certificate errors will be ignored for this session
+JavaScript warning: http://93.40.9.92:8080/js/jquery.js, line 2: Using //@ to indicate sourceMappingURL pragmas is deprecated. Use //# instead
+1623258021600	Marionette	INFO	Stopped listening on port 49965
+1623260413358	geckodriver	INFO	Listening on 127.0.0.1:51528
+1623260416391	mozrunner::runner	INFO	Running command: "C:\\Program Files\\Mozilla Firefox\\firefox.exe" "--marionette" "-foreground" "-no-remote" "-profile" "C:\\Users\\Dead\\AppData\\Local\\Temp\\rust_mozprofileRo6GNr"
+1623260416761	Marionette	INFO	Marionette enabled
+console.warn: SearchSettings: "get: No settings file exists, new profile?" (new NotFoundError("Could not open the file at C:\\Users\\Dead\\AppData\\Local\\Temp\\rust_mozprofileRo6GNr\\search.json.mozlz4", (void 0)))
+1623260418762	Marionette	INFO	Listening on port 51536
+1623260537402	Marionette	INFO	Stopped listening on port 51536

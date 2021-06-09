@@ -4,7 +4,6 @@ from re import T
 from pymongo import MongoClient
 import colorama
 import pyfiglet
-from libreria import Device
 from bcolor import bcolors
 from dns import resolver, reversename #Para los datos DNS
 from datetime import datetime,timedelta #Para calcular la diferencia de fechas cuando la ip está en la bbdd
@@ -76,24 +75,59 @@ def cabecera(): #Impresión de Texto Principal
     print ((bcolors.WARNING+ Users+"\t" + bcolors.ENDC) + (bcolors.HEADER+ Integrates+"\n"+bcolors.ENDC ))
 
 
+def main():
+    
+    while True:
+        print(bcolors.WARNING+"Qué tipo de busqueda deseas realizar? \n"+bcolors.ENDC)
+
+        print(bcolors.WARNING+" 1) "+bcolors.ENDC+bcolors.OKBLUE+" Busqueda aleatoria"+bcolors.ENDC)
+        print(bcolors.WARNING+" 2) "+bcolors.ENDC+bcolors.OKBLUE+" Rango direcciones IPV4"+bcolors.ENDC)
+        print(bcolors.WARNING+" 3) "+bcolors.ENDC+bcolors.OKBLUE+" Salir"+bcolors.ENDC)
+
+        print("\n")
+
+        num = input('Introduce el número: ')
+
+        
+
+
+            # Condición para romper el ciclo.
+        if num == str(1):
+            print("1")
+            break
+        if num == str(2):
+            print("2")
+            break
+        if num == str(3):
+            print("3")
+            break
+        if num == '':
+            print('No has ingresado una opción ')
+            print('Favor de volverlo a intentar.')
+        else:
+            print('La opcion ingresada no es la corecta')
+            print('Favor de volverlo a intentar.')
+
+    
 
 #Direcciones IPV4  de Ecuador aleatorias. 
 
 def generacion_IP_Ecuador():
     try:
-        #ip = IPv4Address('{0}.{1}.{2}.{3}'.format(randint(0,255),randint(0,255),randint(0,255),randint(0,255)))
-        ip = IPv4Address('200.7.223.123')
-        obj = pygeoip.GeoIP('Geo/GeoLiteCity.dat')
-        res = obj.record_by_addr(str(ip))
-        #if para validar que la direccion  ipv4 es de ecuador
-        if(ip.is_unspecified or ip.is_loopback or ip.is_multicast  or ip.is_reserved or ip.is_private or ip.is_link_local or obj.country_code_by_addr(str(ip))!="EC"):
-            return generacion_IP_Ecuador()
-            
-        else:
-            print("La ip ingresada es ", ip)
-            for key,val in res.items():
-                print('%s : %s' % (key, val))
-        return str(ip)
+        while True: #Bucle que se cierra una ves obtenga la direcciones ipv4 de Ecuador
+            ip = IPv4Address('{0}.{1}.{2}.{3}'.format(randint(0,255),randint(0,255),randint(0,255),randint(0,255)))
+            obj = pygeoip.GeoIP('Geo/GeoLiteCity.dat')
+            res = obj.record_by_addr(str(ip))
+            #if para validar que la direccion  ipv4 es de ecuador
+            if(obj.country_code_by_addr(str(ip))=="EC"):
+                print("La ip ingresada es ", ip)
+                for key,val in res.items():
+                    print('%s : %s' % (key, val))
+                break
+
+
+        return str(ip) 
+
     except Exception as e:
         print( bcolors.WARNING +"Se ha producido un error al crear una dirección Ipv4 randomica "+str(ip)+bcolors.ENDC, e)
         exit(1)
@@ -122,8 +156,8 @@ def capturadepantalla(ip, puerto):
     try:
         browser = webdriver.Firefox(
             executable_path=r'G:\IoT_Divices_ESFOT\FirefoxDriver\geckodriver.exe')
-        #browser.implicitly_wait(30) 
-        #browser.set_page_load_timeout(200)
+        browser.implicitly_wait(30) 
+        browser.set_page_load_timeout(200)
         browser.get("http://{0}".format(ip)+":"+str(puerto))
         screenshot = browser.get_screenshot_as_png()
         state = True
@@ -197,6 +231,8 @@ def addNewDevices(ip, portOpen, exist):
 if __name__ == "__main__":
     colorama.init()
     cabecera()
+    main()
+
     # Si se recibe un parámetro se comprobaran tantas direcciones ip como es parámetro (limitando a 1000)
     repeticiones=1#si usuario no ingresa ningun valor, por defecto es 100 direciones ip
     if len(sys.argv)==2:#tomamos el segundo valor de entrada despues del test,py numero
@@ -206,7 +242,7 @@ if __name__ == "__main__":
             print("El uso del programa es sin parámtetros, con lo que se ejecutará 10 veces o aplicacion.py num, con lo que se ejecutará num veces siempre que sea menor o igual a 10")
             exit(-1)
         if int(repeticiones)>10:#maximo de direcciones IP 1000 a buscar.
-            repeticiones=10
+            repeticiones=100
     print("Se van a examinar ",repeticiones, "direcciones IP localizadas en Ecuador")
 
     #Bucle repeticiones IP
@@ -221,8 +257,9 @@ if __name__ == "__main__":
     #69, 135, 161, 162, 4786, 5431, 8291, 37215, 53413]
 
     for cont in range(0,repeticiones):
-        #ip=generacion_IP_Ecuador()#llamamos a la funcion, ip aleatorias
-        ip='93.40.9.92'
+        ip=generacion_IP_Ecuador()#llamamos a la funcion, ip aleatorias
+        
+        #ip='93.40.9.92'
         print("IP generada:", ip)
         #Comprobamos si la IPv4 está en la base de datos MongpAtlas
         exist=find_devices(ip)
