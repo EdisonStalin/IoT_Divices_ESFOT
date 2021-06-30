@@ -351,3 +351,26 @@ console.warn: SearchSettings: "get: No settings file exists, new profile?" (new 
 1624049777047	Marionette	INFO	Listening on port 63809
 1624049777512	Marionette	WARN	TLS certificate errors will be ignored for this session
 1624049777808	Marionette	INFO	Stopped listening on port 63809
+1625069534655	geckodriver	INFO	Listening on 127.0.0.1:60609
+1625069537729	mozrunner::runner	INFO	Running command: "C:\\Program Files\\Mozilla Firefox\\firefox.exe" "--marionette" "-foreground" "-no-remote" "-profile" "C:\\Users\\Dead\\AppData\\Local\\Temp\\rust_mozprofileTDz6be"
+1625069538816	Marionette	INFO	Marionette enabled
+console.warn: SearchSettings: "get: No settings file exists, new profile?" (new NotFoundError("Could not open the file at C:\\Users\\Dead\\AppData\\Local\\Temp\\rust_mozprofileTDz6be\\search.json.mozlz4", (void 0)))
+1625069541537	Marionette	INFO	Listening on port 60617
+1625069542047	Marionette	WARN	TLS certificate errors will be ignored for this session
+1625069542942	Marionette	INFO	Stopped listening on port 60617
+console.warn: services.settings: main/message-groups sync interrupted by shutdown
+console.error: Region.jsm: "Error fetching region" (new TypeError("NetworkError when attempting to fetch resource.", ""))
+console.error: Region.jsm: "Failed to fetch region" (new Error("NO_RESULT", "resource://gre/modules/Region.jsm", 419))
+
+###!!! [Child][RunMessage] Error: Channel closing: too late to send/recv, messages will be lost
+
+1625070027254	geckodriver	INFO	Listening on 127.0.0.1:64205
+1625070030319	mozrunner::runner	INFO	Running command: "C:\\Program Files\\Mozilla Firefox\\firefox.exe" "--marionette" "-foreground" "-no-remote" "-profile" "C:\\Users\\Dead\\AppData\\Local\\Temp\\rust_mozprofileoNUbhi"
+1625070030937	Marionette	INFO	Marionette enabled
+console.warn: SearchSettings: "get: No settings file exists, new profile?" (new NotFoundError("Could not open the file at C:\\Users\\Dead\\AppData\\Local\\Temp\\rust_mozprofileoNUbhi\\search.json.mozlz4", (void 0)))
+1625070033133	Marionette	INFO	Listening on port 64214
+1625070033564	Marionette	WARN	TLS certificate errors will be ignored for this session
+1625070033984	Marionette	INFO	Stopped listening on port 64214
+
+###!!! [Child][RunMessage] Error: Channel closing: too late to send/recv, messages will be lost
+
