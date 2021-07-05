@@ -134,14 +134,16 @@ def main():
         if num == str(2):
             print("2")
             break
+
         if num == str(3):
             print (bcolors.HEADER + "\n\n\t Gracias por usar el sistemas de Busqueda \n\n" + bcolors.ENDC)
             exist
-            
             break
+
         if num == '':
             print('No has ingresado una opción ')
             print('Favor de volverlo a intentar.')
+
         else:
             print('La opcion ingresada no es la corecta')
             print('Favor de volverlo a intentar.')
@@ -161,7 +163,6 @@ def Generar_IP_Ecuador_Aleatoria():
                 print("La ip ingresada es ", ip)
                 #for key,val in res.items():
                     #print('%s : %s' % (key, val))
-                    
                 break
 
         return str(ip) #guardar ipv4 de Ecuador
@@ -172,22 +173,9 @@ def Generar_IP_Ecuador_Aleatoria():
         
 ### Rango de direcciones Ipv4.
 
-#def generacion_IP_Ecuador_Aleatoria():
-    #try:
-        #ip1=ip1
-        #ip2=ip2
-        #for i in range(ip1,ip2):
 
 
-
-        #return
-    #except Exception as e:
-        #print( bcolors.WARNING +"Se ha producido un error al crear una dirección Ipv4 randomica "+str(ip)+bcolors.ENDC, e)
-        #exit(1)
-
-
-
-
+####################################################
 
 
 #Recibe un host y los puertos que queremos comprobar y devuelve los puertos abiertos
@@ -200,7 +188,8 @@ def OpenPort(host, puerto):
             return True#puerto abierto
         else:
             return False#puerto cerrado     
-        
+        s.close()
+        return resultado
     except Exception as e:
         print("Se ha producido un error al crear la  conexión desde el host "+host+" con el puerto:",puerto, "error: ", e)
 
@@ -252,14 +241,14 @@ def capturadepantalla(ip, puerto):
     else:
         return None 
       
-# Obtiene la información correspondiente a esos puertos  
+
+# Obtiene la información correspondiente a esos puertos y añadirlos o actualizarlos.
+#####
+#### 
+###  
 def addNewDevices(ip, portOpen, exist, fecha):
 
-    #adñadir información de la direccion Ipv4
-    obj = pygeoip.GeoIP('Geo/GeoLiteCity.dat')
-    res = obj.record_by_addr(str(ip))
-    #for key,val in res.items():
-            #print('%s : %s' % (key, val))
+   
             
     for puerto in portOpen:
         try:
@@ -269,11 +258,17 @@ def addNewDevices(ip, portOpen, exist, fecha):
             banner=""#Inicializamos banner por si al final hay error en el siguiente paso
             banner = connection.recv(1024)
             aux = str(banner).replace('\\r\\n','<br/>')
-            banner = aux[2:len(aux)-3] ##Quitamos el espacio incial y los finales que no interesan. Ya tenemos el banner
+            banner = aux[2:len(aux)-3] #Quitamos el espacio incial y los finales que no interesan. Ya tenemos el banner
                 
         except Exception as e:
             print("Error al realizar la conexión con el banner:", e)
         connection.close()
+
+        #adñadir información de la direccion Ipv4
+        obj = pygeoip.GeoIP('Geo/GeoLiteCity.dat')
+        location = obj.record_by_addr(str(ip))
+            #for key,val in res.items():
+                #print('%s : %s' % (key, val))
 
 
         dominio=getfqdn(ip) ##Aquí tenemos el nombre de dominio de la ip
@@ -294,18 +289,25 @@ def addNewDevices(ip, portOpen, exist, fecha):
         print("Datos Whois:", whois)
         print("DNS:", datosdns)
         print("Fecha:", date)
-        #iid = cursor.lastrowid
+        
+        #Almacenar en una arreglo la información del puerto.
+        puerto = {'Puerto' : str(puerto), 'Banner' : str(banner)}
 
-        if exist==False:
-            db = get_db()
-            datos = Device(str(ip), res, str(date), str(banner), str(dominio), whois, str(dns), str(puerto))
+
+
+        if exist == False:#agregar la infromacion a la data por primera vez.
+
+            db = get_db()#Conexion bd mongoatlas.
+            # Atributos de la clase Devices (ip, fecha ,location, whois, dominio, dns, puerto)
+            datos = Device(str(ip), str(date), location, whois, str(dominio), str(dns), puerto)
             db.Devices.insert_one(datos.toCollection())
+             
 
-        if fecha == True:
+        if fecha == True:#fecha paso los 30 días, solo se debe realizar una actualizacion
             db = get_db()
-            db.Devices.update_one({"Direccion":str(ip)},{"$set":{"Fecha": str(date), "puerto": str(puerto)}})
-        else:
-            print("F")
+            db.Devices.update_one({"Direccion":str(ip)},{"$set":{"Fecha": str(date), "puerto": puerto}})
+            
+
 
 
 
@@ -316,14 +318,6 @@ def new_search(valor):
     else:
         print (bcolors.HEADER + "\n\n\t Gracias por usar el sistemas de Busqueda \n\n" + bcolors.ENDC)
         exist
-
-
-
-
-
-
-
-
 
 
 
@@ -373,32 +367,26 @@ if __name__ == "__main__":
         exist=find_devices(ip)#True (IPV4 ya exite ) / False (Ipv4 no exite)
         fecha = DateTime(ip)#True (Mayor a 30 días) / False (Menor a 30 días)
         print("Exit, estado: ", exist)
-        active_port=False
 
         if(exist == False or fecha == True ):#la ipv4 no exite / tiempo mayor a 30 dias
             portOpen = []
 
             for port in PortsList:
-                cont += 1
+                #cont += 1
                 open=OpenPort(ip,port)
 
-                if open == True:
+                if  open:
                     valor = (valor + 1)
-                    print((bcolors.WARNING +"  "+ str(cont)+")  "+bcolors.ENDC)+(bcolors.OKGREEN+"PUERTO: "+ str(port)+"\t" +bcolors.ENDC)+(bcolors.OKGREEN+"Estado :"+str(open) +bcolors.ENDC))
+                    #print((bcolors.WARNING +"  "+ str(cont)+")  "+bcolors.ENDC)+(bcolors.OKGREEN+"PUERTO: "+ str(port)+"\t" +bcolors.ENDC)+(bcolors.OKGREEN+"Estado :"+str(open) +bcolors.ENDC))
                     portOpen.append(port)
-                    active_port=True#Almenos 1 puerto activo.
-                    addNewDevices(ip, portOpen, exist, fecha)
-                    #imprimir = addNewDevices(ip, portOpen, exist)
 
-                    #print ("addnewdevices-->"+imprimir) imprimir la ipv4 agregada a la bd
-                    #print("Puertos Activos",addNewDevices())
-                else:
-                    print((bcolors.WARNING +"  "+ str(cont)+")  "+bcolors.ENDC)+(bcolors.FAIL+"PUERTO: "+ str(port)+"\t" +bcolors.ENDC)+(bcolors.FAIL+"Estado :"+str(open) +bcolors.ENDC))
-                    active_port=False
+            addNewDevices(ip, portOpen, exist, fecha)
+                    
+                #else:
+                    #print((bcolors.WARNING +"  "+ str(cont)+")  "+bcolors.ENDC)+(bcolors.FAIL+"PUERTO: "+ str(port)+"\t" +bcolors.ENDC)+(bcolors.FAIL+"Estado :"+str(open) +bcolors.ENDC))
         
-        if(exist==True):
+        else:
             print("La dirección IPv4", ip , " ya existe" )
-
 
             
 
