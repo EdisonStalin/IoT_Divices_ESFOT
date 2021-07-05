@@ -12,6 +12,7 @@ import time
 import socket #Manejo de sockets
 from socket import socket, AF_INET, SOCK_STREAM, setdefaulttimeout,getfqdn #Comprobar sockets abiertos
 
+from PIL import Image #imagenes
 
 #clase atributos
 from atributos import Device 
@@ -152,14 +153,15 @@ def Generar_IP_Ecuador_Aleatoria():
     try:
         while True: #Bucle que se cierra una ves obtenga la direcciones ipv4 de Ecuador
             #ip = IPv4Address('{0}.{1}.{2}.{3}'.format(randint(0,255),randint(0,255),randint(0,255),randint(0,255)))
-            ip = '200.7.254.201'
+            ip = '186.5.59.70'
             obj = pygeoip.GeoIP('Geo/GeoLiteCity.dat')
-            res = obj.record_by_addr(str(ip))
+            #res = obj.record_by_addr(str(ip))
             #if para validar que la direccion  ipv4 es de ecuador
             if(obj.country_code_by_addr(str(ip))=="EC"):
                 print("La ip ingresada es ", ip)
-                for key,val in res.items():
-                    print('%s : %s' % (key, val))
+                #for key,val in res.items():
+                    #print('%s : %s' % (key, val))
+                    
                 break
 
         return str(ip) #guardar ipv4 de Ecuador
@@ -210,8 +212,8 @@ def capturadepantalla(ip, puerto):
     try:
         browser = webdriver.Firefox(
             executable_path=r'G:\IoT_Divices_ESFOT\FirefoxDriver\geckodriver.exe')
-        #browser.implicitly_wait(30) 
-        #browser.set_page_load_timeout(200)
+        browser.implicitly_wait(30) 
+        browser.set_page_load_timeout(200)
         browser.get("http://{0}".format(ip)+":"+str(puerto))
         screenshot = browser.get_screenshot_as_png()
         state = True
@@ -221,11 +223,11 @@ def capturadepantalla(ip, puerto):
         #componemos el nombre de fichero con la dirección IP, la hora, y la extensión PNG
         try:
             
-            nombreimagen=ip+str(time.strftime("%d%m%y%H.%M.%S"))+".png"
+            nombreimagen=ip+".png"
             print("1", nombreimagen)
-            pathimagen=path.join(path.dirname(__file__),r"G:\IoT_Divices_ESFOT\capturas")
+            pathimagen=path.join(path.dirname(__file__),r"G:IoT_Divices_ESFOT/capturas/")
             print("2", pathimagen)
-            img = open(pathimagen+nombreimagen, 'wb')
+            img = Image.open(pathimagen+nombreimagen)#da error
             print("3", img)
             img.write(screenshot)
             print("4")
@@ -252,7 +254,13 @@ def capturadepantalla(ip, puerto):
       
 # Obtiene la información correspondiente a esos puertos  
 def addNewDevices(ip, portOpen, exist, fecha):
-    
+
+    #adñadir información de la direccion Ipv4
+    obj = pygeoip.GeoIP('Geo/GeoLiteCity.dat')
+    res = obj.record_by_addr(str(ip))
+    #for key,val in res.items():
+            #print('%s : %s' % (key, val))
+            
     for puerto in portOpen:
         try:
             connection = socket(AF_INET, SOCK_STREAM)
@@ -275,11 +283,11 @@ def addNewDevices(ip, portOpen, exist, fecha):
         date=datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         
     
-        if puerto==80 or puerto==8080 or puerto ==8081:
+        #if puerto==80 or puerto==8080 or puerto ==8081:
             #imagen= capturadepantalla(ip, puerto)
-            print("realiza captura en los puertos 80, 8080 & 8081")  
-        else:
-            imagen="Noimagen.png"
+            #print("realiza captura en los puertos 80, 8080 & 8081")  
+        #else:
+            #imagen="Noimagen.png"
         #Almacenamos información
         print("Banner:", banner)
         print("NombredeDominio:", dominio)
@@ -290,20 +298,18 @@ def addNewDevices(ip, portOpen, exist, fecha):
 
         if exist==False:
             db = get_db()
-            datos = Device(str(ip), str(date), str(banner), str(dominio), str(whois), str(dns), str(puerto))
+            datos = Device(str(ip), res, str(date), str(banner), str(dominio), whois, str(dns), str(puerto))
             db.Devices.insert_one(datos.toCollection())
 
         if fecha == True:
             db = get_db()
             db.Devices.update_one({"Direccion":str(ip)},{"$set":{"Fecha": str(date), "puerto": str(puerto)}})
-
-
-
         else:
             print("F")
 
 
 
+#finalización de la busqueda
 def new_search(valor):
     if ((valor == "Si") or (valor == "si")):
         return main()
@@ -344,7 +350,7 @@ if __name__ == "__main__":
     valor =0
     #PortsList=[80]
     #PortsList=[161,8081,8182,8083,443,22,3001,1883,80,81,82] #juego reducido de puertos que se van a comprobar
-    PortsList=[80]
+    PortsList=[21,443]
     #PortsList=[5683, 5684,22,23,5060,8080,7547,8291,2323,25,2222,9200,8090,52869,37777,37215,2332,2223,5061]
     #PortsList=[22, 23, 25, 53, 80, 81, 110, 180, 443, 873, 2323, 5000, 5001, 5094, 5150, 5160, 7547, 8080, 8100, 8443, 8883, 49152, 52869, 56000,
     #1728, 3001, 8008, 8009, 10001,223, 1080, 1935, 2332, 8888, 9100,2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007,21, 554, 888, 1159, 1160, 1161,
@@ -362,15 +368,12 @@ if __name__ == "__main__":
             ip=Generar_IP_Ecuador_Aleatoria()#llamamos a la funcion, ip aleatorias
         if ipv4 == str(2):
             ip='93.40.9.92'
-
         print("IP generada:", ip)
         #Comprobamos si la IPv4 está en la base de datos MongpAtlas
         exist=find_devices(ip)#True (IPV4 ya exite ) / False (Ipv4 no exite)
         fecha = DateTime(ip)#True (Mayor a 30 días) / False (Menor a 30 días)
         print("Exit, estado: ", exist)
         active_port=False
-
-        
 
         if(exist == False or fecha == True ):#la ipv4 no exite / tiempo mayor a 30 dias
             portOpen = []
@@ -389,20 +392,19 @@ if __name__ == "__main__":
 
                     #print ("addnewdevices-->"+imprimir) imprimir la ipv4 agregada a la bd
                     #print("Puertos Activos",addNewDevices())
-                    print("Direccion Ipv4 --> "+ip+"  Puertos Abiertos--> ",portOpen)
                 else:
                     print((bcolors.WARNING +"  "+ str(cont)+")  "+bcolors.ENDC)+(bcolors.FAIL+"PUERTO: "+ str(port)+"\t" +bcolors.ENDC)+(bcolors.FAIL+"Estado :"+str(open) +bcolors.ENDC))
                     active_port=False
         
-            
-
-        else:
+        if(exist==True):
             print("La dirección IPv4", ip , " ya existe" )
-            print("Direccion Ipv4 --> "+ip+"  Puertos Abiertos--> ",portOpen)
+
+
+            
 
 
     print("Puertos Activos",valor)
-    
+    print("Direccion Ipv4 --> "+ip+"  Puertos Abiertos--> ",portOpen)
     
     #resultado
     print("find devices---->   " , find_devices(ip))
