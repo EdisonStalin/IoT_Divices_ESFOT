@@ -1,6 +1,7 @@
 class Device:
-    def __init__(self, ip, fecha ,location, whois, dominio, dns, puerto):
+    def __init__(self, ip, img, fecha ,location, whois, dominio, dns, puerto):
         self.ipv4 = ip
+        self.img = img
         self.date = fecha
         self.location = location
         self.whois = whois
@@ -11,6 +12,7 @@ class Device:
     def toCollection(self):
         return{
             "Direccion": self.ipv4,
+            "Imagen" : self.img,
             "Fecha": self.date,
             "Locatizacion":self.location,
             "Whois": self.whois,
