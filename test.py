@@ -1,3 +1,5 @@
+from warnings import resetwarnings
+from dns.rdatatype import NULL
 from pymongo import MongoClient ## conexión a la base de datos
 import sys
 import colorama ## Imprime texto en colores
@@ -98,32 +100,32 @@ def cabecera(): #Impresión de Texto Principal
     print ((bcolors.WARNING+ Users+"\t" + bcolors.ENDC) + (bcolors.HEADER+ Integrates+"\n"+bcolors.ENDC ))
 
 
+
+
 def main():
     
     while True:
-        print(bcolors.WARNING+"\n\nQué tipo de busqueda deseas realizar? \n"+bcolors.ENDC)
+        print(bcolors.WARNING+"\n\nQué deseas Hacer.? \n"+bcolors.ENDC)
 
-        print(bcolors.WARNING+" 1) "+bcolors.ENDC+bcolors.OKBLUE+" Busqueda aleatoria"+bcolors.ENDC)
-        print(bcolors.WARNING+" 2) "+bcolors.ENDC+bcolors.OKBLUE+" Rango direcciones IPV4"+bcolors.ENDC)
-        print(bcolors.WARNING+" 3) "+bcolors.ENDC+bcolors.OKBLUE+" Salir"+bcolors.ENDC)
-
+        print(bcolors.WARNING+" 1) "+bcolors.ENDC+bcolors.OKBLUE+" Recolectar datos de direcciones Ipv4"+bcolors.ENDC)
+        print(bcolors.WARNING+" 2) "+bcolors.ENDC+bcolors.OKBLUE+" Salir"+bcolors.ENDC)
         print("\n")
 
-        num = input('Introduce el número: ')
+        num = input('Introduce el Opción: ')
 
         if num == str(1):
             print("\n")
-
+            print(bcolors.OKBLUE+" Cúantas direcciones Ipv4 Aleatorias deseas: "+bcolors.ENDC)
+            repeticiones = input('Introduce la cantidad: ')
+            cant =  repetir(repeticiones)
+            agregar(cant)
             break
+
 
         if num == str(2):
-            print("\n")
-            break
-
-        if num == str(3):
             print (bcolors.HEADER + "\n\n\t Gracias por usar el sistemas de Busqueda \n\n" + bcolors.ENDC)
-            exist
-            break
+            exit(1)
+            
 
         if num == '':
             print('No has ingresado una opción ')
@@ -140,19 +142,21 @@ def Generar_IP_Ecuador_Aleatoria():
     try:
         while True: #Bucle que se cierra una ves obtenga la direcciones ipv4 de Ecuador
             #ip = IPv4Address('{0}.{1}.{2}.{3}'.format(randint(0,255),randint(0,255),randint(0,255),randint(0,255)))
-            #ip = '200.7.195.124'#Conexión fallida
-            ip = '200.1.112.207'#No se encuentra activa
+            
+            ip = '190.15.136.171'
+            #ip = '200.7.195.124' ## Conexión fallida
+            #ip = '200.1.112.207' ## No se encuentra activa
             obj = pygeoip.GeoIP('Geo/GeoLiteCity.dat')
-            #res = obj.record_by_addr(str(ip))
+            res = obj.record_by_addr(str(ip))
             ## Validar que la direccion  ipv4 es de ecuador
             if(obj.country_code_by_addr(str(ip))=="EC"):
-                print("La ip ingresada es ", ip)
-                #for key,val in res.items():
-                    #print('%s : %s' % (key, val))
+                #print("La ip ingresada es ", ip)
+                for key,val in res.items():
+                    print('%s : %s' % (key, val))
                 break
-            else:
-                print('la dirrección Ipv4: '+ str(ip) + ', esta inactiva')
-                exit(1)
+            #else:
+                #print('la dirrección Ipv4: '+ str(ip) + ', esta inactiva')
+                #exit(1)
             
         return str(ip) #guardar ipv4 de Ecuador
 
@@ -170,7 +174,7 @@ def Generar_IP_Ecuador_Aleatoria():
 #Recibe un host y los puertos que queremos comprobar y devuelve los puertos abiertos
 def OpenPort(host, puerto):
     try:
-        setdefaulttimeout(5)
+        setdefaulttimeout(5) ## Tiempo de conexión
         s=socket(AF_INET, SOCK_STREAM)
         resultado=s.connect_ex((str(host),puerto))
         if  resultado == 0:
@@ -195,8 +199,8 @@ def capturadepantalla(ip, puerto):
         browser.implicitly_wait(30) 
         browser.set_page_load_timeout(200)
         browser.get("http://{0}".format(ip)+":"+str(puerto))
-        nombreimagen=str(ip)+".png"
-        screenshot = browser.get_screenshot_as_file(r"G:\\IoT_Divices_ESFOT\\capturas\\"+ str(nombreimagen))
+        nombreimagen=str(ip)+".png" ## Nombre de la Img.
+        screenshot = browser.get_screenshot_as_file(r"G:\\IoT_Divices_ESFOT\\capturas\\"+ str(nombreimagen)) ##Bool
         #print("variable bool",screenshot)
         state = screenshot
         browser.quit()
@@ -230,10 +234,10 @@ def addNewDevices(ip, portOpen, exist, fecha):
             connection = socket(AF_INET, SOCK_STREAM)
             connection.connect((ip, puerto))
             connection.send(b'HEAD / HTTP/1.0\r\n\r\n')
-            banner=""#Inicializamos banner por si al final hay error en el siguiente paso
+            banner=""## Inicializamos banner por si al final hay error en el siguiente paso
             banner = connection.recv(1024)
             aux = str(banner).replace('\\r\\n','<br/>')
-            banner = aux[2:len(aux)-3] #Quitamos el espacio incial y los finales que no interesan. Ya tenemos el banner
+            banner = aux[2:len(aux)-3] ## Quitamos el espacio incial y los finales que no interesan. Ya tenemos el banner
                 
         except Exception as e:
             print("Error al realizar la conexión con el banner:", e)
@@ -242,19 +246,19 @@ def addNewDevices(ip, portOpen, exist, fecha):
         #adñadir información de la direccion Ipv4
         obj = pygeoip.GeoIP('Geo/GeoLiteCity.dat')
         location = obj.record_by_addr(str(ip))
-        print('location: ', location)
+        #print('location: ', location)
         #for key,val in location.items():
             #print('%s : %s' % (key, val))
         
         if puerto==80 or puerto==8080 or puerto ==8081:
-            imagen= capturadepantalla(ip, puerto)
+            imagen=capturadepantalla(ip, puerto)
             print("Se a realizado exitosamente la catura.")  
         else:
             imagen="Noimagen.png"
 
         
             
-        #Almacena 'Documentos' dentro de un arreglo, usando append.
+        ## Almacena 'Documentos' dentro de un arreglo, usando append.
         puerto ={'Puerto' : str(puerto), 'Banner' : str(banner)}
         puertoList.append(puerto)  
 
@@ -275,7 +279,7 @@ def addNewDevices(ip, portOpen, exist, fecha):
 
 
     ## Agrega la infromacion a la base de datos por primera vez.
-    ## Los atributos que se asignan son los siguientes: (ip, fecha ,location, whois, dominio, dns, puerto)
+    ## Los atributos que se asignan son los siguientes: (ip, img, fecha ,location, whois, dominio, dns, puerto)
     if exist == False: 
 
         db = get_db()
@@ -295,84 +299,92 @@ def new_search(valor):
         return main()
     else:
         print (bcolors.HEADER + "\n\n\t Gracias por usar el sistemas de Busqueda \n\n" + bcolors.ENDC)
-        exist
+        exit(1)
 
-
-if __name__ == "__main__":
-    colorama.init()
-    cabecera()
-    ipv4 = main()
-
-    
     # Si se recibe un parámetro se comprobaran tantas direcciones ip como es parámetro (limitando a 1000)
-    repeticiones=1#si usuario no ingresa ningun valor, por defecto es 100 direciones ip
-    if len(sys.argv)==2:#tomamos el segundo valor de entrada despues del test,py numero
-        try:
-            repeticiones =int(sys.argv[1])#guardar en el valor de entrada en una variable.
-        except:
-            print("El uso del programa es sin parámtetros, con lo que se ejecutará 10 veces o aplicacion.py num, con lo que se ejecutará num veces siempre que sea menor o igual a 10")
-            exit(-1)
-        if int(repeticiones)>10:#maximo de direcciones IP 1000 a buscar.
-            repeticiones=100
-    print("Se van a examinar ",repeticiones, "direcciones IP localizadas en Ecuador")
 
+def repetir(repeticiones):
+    #repeticiones=1 ## si usuario no ingresa ningun valor, por defecto es 1 direción ip
+    if int(repeticiones) > 1000:   ## Realizara una busqueda de 100 direciones ipv4.
+        repeticiones = 100
+    
+    print("Se van a examinar ",repeticiones, "direcciones IP localizadas en Ecuador")
+    return repeticiones
+
+def agregar(repeticiones):
     #Bucle repeticiones IP
     valor =0
     #PortsList=[80]
     #PortsList=[161,8081,8182,8083,443,22,3001,1883,80,81,82] #juego reducido de puertos que se van a comprobar
-    PortsList=[80]
+    #PortsList=[80]
     #PortsList=[5683, 5684,22,23,5060,8080,7547,8291,2323,25,2222,9200,8090,52869,37777,37215,2332,2223,5061]
-    #PortsList=[22, 23, 25, 53, 80, 81, 110, 180, 443, 873, 2323, 5000, 5001, 5094, 5150, 5160, 7547, 8080, 8100, 8443, 8883, 49152, 52869, 56000,
-    #1728, 3001, 8008, 8009, 10001,223, 1080, 1935, 2332, 8888, 9100,2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007,21, 554, 888, 1159, 1160, 1161,
-    #1435, 1518, 3389, 4550, 5005, 5400, 5550, 6550, 7000, 8000, 8081, 8090, 8150, 8866, 9000, 9650, 9999, 10000, 18004, 25001, 30001, 34567, 37777,
-    #69, 135, 161, 162, 4786, 5431, 8291, 37215, 53413]  
-    valor = 0
-    portOpen = []
+    PortsList=[22, 23, 25, 53, 80, 81, 110, 180, 443, 873, 2323, 5000, 5001, 5094, 5150, 5160, 7547, 8080, 8100, 8443, 8883, 49152, 52869, 56000,
+    1728, 3001, 8008, 8009, 10001,223, 1080, 1935, 2332, 8888, 9100,2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007,21, 554, 888, 1159, 1160, 1161,
+    1435, 1518, 3389, 4550, 5005, 5400, 5550, 6550, 7000, 8000, 8081, 8090, 8150, 8866, 9000, 9650, 9999, 10000, 18004, 25001, 30001, 34567, 37777,
+    69, 135, 161, 162, 4786, 5431, 8291, 37215, 53413]  
+    
     #agregarle en una funcion 
-    for cont in range(0,repeticiones):
+    #print("repeticiones", repeticiones)
+    for cont in range(0, int(repeticiones)):
         #validar el tipo de busqueda.
-        if ipv4 == str(1):
-            #ip=Generar_IP_Ecuador_Aleatoria()#llamamos a la funcion, ip aleatorias
-            ip = '200.1.112.207'
-        if ipv4 == str(2):
-            ip='93.40.9.92'
+        ip=Generar_IP_Ecuador_Aleatoria()   ## llamamos a la funcion, ip aleatorias
         print("IP generada:", ip)
         #Comprobamos si la IPv4 está en la base de datos MongpAtlas
         exist=find_devices(ip)#True (IPV4 ya exite ) / False (Ipv4 no exite)
         fecha = DateTime(ip)#True (Mayor a 30 días) / False (Menor a 30 días)
         #print("Exit, estado: ", exist)
 
-        if(exist == False or fecha == True ):#la ipv4 no exite / tiempo mayor a 30 dias
-            
+        if(exist == False or fecha == True):#la ipv4 no exite / tiempo mayor a 30 dias
+            portOpen = []
+            validar = portOpen.__len__
+            print
 
             for port in PortsList:
-                #cont += 1
+                cont += 1
                 open=OpenPort(ip,port)
 
-                if  open:
+                if  open == True:
                     valor = (valor + 1)
-                    #print((bcolors.WARNING +"  "+ str(cont)+")  "+bcolors.ENDC)+(bcolors.OKGREEN+"PUERTO: "+ str(port)+"\t" +bcolors.ENDC)+(bcolors.OKGREEN+"Estado :"+str(open) +bcolors.ENDC))
+                    print((bcolors.WARNING +"  "+ str(cont)+")  "+bcolors.ENDC)+(bcolors.OKGREEN+"PUERTO: "+ str(port)+"\t" +bcolors.ENDC)+(bcolors.OKGREEN+"Estado :"+str(open) +bcolors.ENDC))
                     portOpen.append(port)
+                else:
+                    print((bcolors.WARNING +"  "+ str(cont)+")  "+bcolors.ENDC)+(bcolors.FAIL+"PUERTO: "+ str(port)+"\t" +bcolors.ENDC)+(bcolors.FAIL+"Estado :"+str(open) +bcolors.ENDC))
+            validar = len(portOpen)
+            print("contar ", validar)
 
-            addNewDevices(ip, portOpen, exist, fecha)
-            print("Direccion Ipv4 --> "+ip+"  Puertos Abiertos--> ",portOpen)        
-                #else:
-                    #print((bcolors.WARNING +"  "+ str(cont)+")  "+bcolors.ENDC)+(bcolors.FAIL+"PUERTO: "+ str(port)+"\t" +bcolors.ENDC)+(bcolors.FAIL+"Estado :"+str(open) +bcolors.ENDC))
-        
+            if int(validar) != 0:
+                addNewDevices(ip, portOpen, exist, fecha)
+                print("Direccion Ipv4 --> "+ip+"  Puertos Abiertos--> ",portOpen)        
+            else:
+                print("La dirección Ipv4,"+ ip +" No contiene ningun puerto activo")
+
         else:
             print("La dirección IPv4", ip , " ya existe y es menor a 30 días")
 
     print(bcolors.WARNING+"\n\nBusqueda Finalizada :) \n\n"+bcolors.ENDC)
             
 
-
-    
     #resultado
 def final():    
     
     print(bcolors.WARNING+"Desea realizar una nueva busqueda \n"+bcolors.ENDC)
     valor = input("Ingrese Si o No: ")
     new_search(valor)
+
+
+
+
+
+    
+
+if __name__ == "__main__":
+    colorama.init()
+    cabecera()
+    main()
+    final()
+    
+
+
 
 
 
