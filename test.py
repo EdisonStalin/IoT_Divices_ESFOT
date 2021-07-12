@@ -2,6 +2,7 @@ from warnings import resetwarnings
 from dns.rdatatype import NULL
 from pymongo import MongoClient ## conexión a la base de datos
 import sys
+import time
 import colorama ## Imprime texto en colores
 import pyfiglet ## Modificar la forma del Título
 from dns import reversename ## Para obtener el DNS
@@ -141,18 +142,17 @@ def main():
 def Generar_IP_Ecuador_Aleatoria():
     try:
         while True: #Bucle que se cierra una ves obtenga la direcciones ipv4 de Ecuador
-            #ip = IPv4Address('{0}.{1}.{2}.{3}'.format(randint(0,255),randint(0,255),randint(0,255),randint(0,255)))
-            
-            ip = '190.15.136.171'
+            ip = IPv4Address('{0}.{1}.{2}.{3}'.format(randint(0,255),randint(0,255),randint(0,255),randint(0,255)))
+            #ip = '190.63.48.50'
             #ip = '200.7.195.124' ## Conexión fallida
             #ip = '200.1.112.207' ## No se encuentra activa
             obj = pygeoip.GeoIP('Geo/GeoLiteCity.dat')
-            res = obj.record_by_addr(str(ip))
+            #res = obj.record_by_addr(str(ip))
             ## Validar que la direccion  ipv4 es de ecuador
             if(obj.country_code_by_addr(str(ip))=="EC"):
                 #print("La ip ingresada es ", ip)
-                for key,val in res.items():
-                    print('%s : %s' % (key, val))
+                #for key,val in res.items():
+                    #print('%s : %s' % (key, val))
                 break
             #else:
                 #print('la dirrección Ipv4: '+ str(ip) + ', esta inactiva')
@@ -174,8 +174,8 @@ def Generar_IP_Ecuador_Aleatoria():
 #Recibe un host y los puertos que queremos comprobar y devuelve los puertos abiertos
 def OpenPort(host, puerto):
     try:
-        setdefaulttimeout(5) ## Tiempo de conexión
-        s=socket(AF_INET, SOCK_STREAM)
+        setdefaulttimeout(0.5) ##Tiempo de conexión
+        s=socket(AF_INET, SOCK_STREAM) ##Puerto IPv4, TCP PROTOCOL
         resultado=s.connect_ex((str(host),puerto))
         if  resultado == 0:
             return True ## Puerto abierto
@@ -195,11 +195,12 @@ def OpenPort(host, puerto):
 def capturadepantalla(ip, puerto):
     setdefaulttimeout(30)
     try:
-        browser = webdriver.Firefox(executable_path=r'G:\\IoT_Divices_ESFOT\\FirefoxDriver\\geckodriver.exe')
+        browser = webdriver.Chrome(executable_path=r'G:\\IoT_Divices_ESFOT\\FirefoxDriver\\chromedriver.exe')
         browser.implicitly_wait(30) 
         browser.set_page_load_timeout(200)
         browser.get("http://{0}".format(ip)+":"+str(puerto))
-        nombreimagen=str(ip)+".png" ## Nombre de la Img.
+        nombreimagen=str(ip)+","+str(puerto)+".png" ## Nombre de la Img.
+        print("nombreimg", nombreimagen)
         screenshot = browser.get_screenshot_as_file(r"G:\\IoT_Divices_ESFOT\\capturas\\"+ str(nombreimagen)) ##Bool
         #print("variable bool",screenshot)
         state = screenshot
@@ -235,7 +236,7 @@ def addNewDevices(ip, portOpen, exist, fecha):
             connection.connect((ip, puerto))
             connection.send(b'HEAD / HTTP/1.0\r\n\r\n')
             banner=""## Inicializamos banner por si al final hay error en el siguiente paso
-            banner = connection.recv(1024)
+            banner = connection.recv(1024) ## Max 1024 Bytes contenido
             aux = str(banner).replace('\\r\\n','<br/>')
             banner = aux[2:len(aux)-3] ## Quitamos el espacio incial y los finales que no interesan. Ya tenemos el banner
                 
@@ -250,7 +251,7 @@ def addNewDevices(ip, portOpen, exist, fecha):
         #for key,val in location.items():
             #print('%s : %s' % (key, val))
         
-        if puerto==80 or puerto==8080 or puerto ==8081:
+        if puerto==80 or puerto==8080 or puerto ==8081 or puerto == 443 or puerto == 3389:# ver más
             imagen=capturadepantalla(ip, puerto)
             print("Se a realizado exitosamente la catura.")  
         else:
@@ -325,10 +326,11 @@ def agregar(repeticiones):
     
     #agregarle en una funcion 
     #print("repeticiones", repeticiones)
-    for cont in range(0, int(repeticiones)):
+    contador = 0
+    for contador in range(0, int(repeticiones)):
         #validar el tipo de busqueda.
         ip=Generar_IP_Ecuador_Aleatoria()   ## llamamos a la funcion, ip aleatorias
-        print("IP generada:", ip)
+        print((bcolors.WARNING +"  "+ str(contador+1)+")  "+bcolors.ENDC)+ "IP generada: "+(bcolors.WARNING + ip +bcolors.ENDC))
         #Comprobamos si la IPv4 está en la base de datos MongpAtlas
         exist=find_devices(ip)#True (IPV4 ya exite ) / False (Ipv4 no exite)
         fecha = DateTime(ip)#True (Mayor a 30 días) / False (Menor a 30 días)
@@ -338,17 +340,17 @@ def agregar(repeticiones):
             portOpen = []
             validar = portOpen.__len__
             print
-
+            
             for port in PortsList:
-                cont += 1
+                
                 open=OpenPort(ip,port)
 
                 if  open == True:
                     valor = (valor + 1)
-                    print((bcolors.WARNING +"  "+ str(cont)+")  "+bcolors.ENDC)+(bcolors.OKGREEN+"PUERTO: "+ str(port)+"\t" +bcolors.ENDC)+(bcolors.OKGREEN+"Estado :"+str(open) +bcolors.ENDC))
+                    print((bcolors.OKGREEN+"PUERTO: "+ str(port)+"\t" +bcolors.ENDC)+(bcolors.OKGREEN+"Estado :"+str(open) +bcolors.ENDC))
                     portOpen.append(port)
-                else:
-                    print((bcolors.WARNING +"  "+ str(cont)+")  "+bcolors.ENDC)+(bcolors.FAIL+"PUERTO: "+ str(port)+"\t" +bcolors.ENDC)+(bcolors.FAIL+"Estado :"+str(open) +bcolors.ENDC))
+                #else:
+                    #print((bcolors.FAIL+"PUERTO: "+ str(port)+"\t" +bcolors.ENDC)+(bcolors.FAIL+"Estado :"+str(open) +bcolors.ENDC))
             validar = len(portOpen)
             print("contar ", validar)
 

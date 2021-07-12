@@ -1,5 +1,5 @@
 # IoT_Divices_ESFOT
-mapeo de puertos, direcciones Ipv4 y zona
+mapeo de puertos, direcciones IPv4 y zona
 
 
 ---- install pymongo
