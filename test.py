@@ -162,10 +162,8 @@ def main():
 def Generar_IP_Ecuador_Aleatoria():
     try:
         while True: #Bucle que se cierra una ves obtenga la direcciones ipv4 de Ecuador
-            #ip = IPv4Address('{0}.{1}.{2}.{3}'.format(randint(0,255),randint(0,255),randint(0,255),randint(0,255)))
-            ip = '191.100.20.14'
-            #ip = '200.7.195.124' ## Conexión fallida
-            #ip = '200.1.112.207' ## No se encuentra activa
+            ip = IPv4Address('{0}.{1}.{2}.{3}'.format(randint(0,255),randint(0,255),randint(0,255),randint(0,255)))
+            #ip = '200.93.248.54'
             obj = pygeoip.GeoIP('Geo/GeoLiteCity.dat')
             #res = obj.record_by_addr(str(ip))
             ## Validar que la direccion  ipv4 es de ecuador
@@ -227,12 +225,12 @@ def capturadepantalla(ip, puerto):
         browser.quit()
     
     except selenium.common.exceptions.WebDriverException as e:
-        print("Se necesita FireFox para realizar una captura de pantalla. Error: ",e)
+        print("Se necesita Chrome para realizar una captura de pantalla. Error: ",e)
         exit(1)
 
     except Exception as e:
         state = False
-        print("Hubo un error al capturar la imagen del navegador FireFox Mozilla: {0}".format(e))
+        print("Hubo un error al capturar la imagen del navegador Chrome: {0}".format(e))
         browser.quit()
         exit(1)
 
@@ -271,14 +269,12 @@ def addNewDevices(ip, portOpen, exist):
             #for key,val in location.items():
                 #print('%s : %s' % (key, val))
             
-            if puerto==80 or puerto==8080 or puerto ==8081 or puerto == 443 or puerto == 3389:# ver más
+            if puerto==80 or puerto==8080 or puerto ==8081 or puerto ==443 or puerto == 3389:# ver más
                 imagen=capturadepantalla(ip, puerto)
                 print("Se a realizado exitosamente la catura.")  
             else:
                 imagen="Noimagen.png"
 
-            
-                
             ## Almacena 'Documentos' dentro de un arreglo, usando append.
             puerto ={'Puerto' : str(puerto), 'Banner' : str(banner), 'Imagen':str(imagen)}
             puertoList.append(puerto)  
