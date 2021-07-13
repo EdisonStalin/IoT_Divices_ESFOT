@@ -1,7 +1,7 @@
 from pymongo import MongoClient ## conexión a la base de datos
 import colorama ## Imprime texto en colores
 import pyfiglet ## Modificar la forma del Título
-from dns import reversename ## Para obtener el DNS
+from dns import name, reversename ## Para obtener el DNS
 from datetime import datetime,timedelta ## Para calcular la diferencia de fechas cuando la ip está en la BD
 from socket import socket, AF_INET, SOCK_STREAM, setdefaulttimeout,getfqdn ## Comprobar sockets abiertos
 from selenium import webdriver ## Abrir FireFox para capturas de pantallas
@@ -162,8 +162,8 @@ def main():
 def Generar_IP_Ecuador_Aleatoria():
     try:
         while True: #Bucle que se cierra una ves obtenga la direcciones ipv4 de Ecuador
-            ip = IPv4Address('{0}.{1}.{2}.{3}'.format(randint(0,255),randint(0,255),randint(0,255),randint(0,255)))
-            #ip = '191.100.20.14'
+            #ip = IPv4Address('{0}.{1}.{2}.{3}'.format(randint(0,255),randint(0,255),randint(0,255),randint(0,255)))
+            ip = '191.100.20.14'
             #ip = '200.7.195.124' ## Conexión fallida
             #ip = '200.1.112.207' ## No se encuentra activa
             obj = pygeoip.GeoIP('Geo/GeoLiteCity.dat')
@@ -280,7 +280,7 @@ def addNewDevices(ip, portOpen, exist):
             
                 
             ## Almacena 'Documentos' dentro de un arreglo, usando append.
-            puerto ={'Puerto' : str(puerto), 'Banner' : str(banner)}
+            puerto ={'Puerto' : str(puerto), 'Banner' : str(banner), 'Imagen':str(imagen)}
             puertoList.append(puerto)  
 
         ## Información de los puertos:
@@ -304,13 +304,13 @@ def addNewDevices(ip, portOpen, exist):
         if exist == 0: 
             estado = True
             db = get_db()
-            datos = Device(str(ip), estado, str(imagen), str(date), location, whois, str(dominio), str(dns), puertoList)
+            datos = Device(str(ip), estado, str(date), location, whois, str(dominio), str(dns), puertoList)
             db.Devices.insert_one(datos.toCollection())
 
         ##Paso el límite los días esblecidos   
         if exist == 1:           
             db = get_db()
-            db.Devices.update_one({"Direccion":str(ip)},{"$set":{"Estado":True, "Imagen":str(imagen), "Fecha": str(date),  "Whois":whois, "Dominio": str(dominio), "Dns": str(dns),"puerto": puertoList}})
+            db.Devices.update_one({"Direccion":str(ip)},{"$set":{"Estado":True, "Fecha": str(date),  "Whois":whois, "Dominio": str(dominio), "Dns": str(dns),"puerto": puertoList}})
 
     except Exception as e:
         print( "Se ha producido un error al agregar la información de la Dirección IPv4 proporcionada :", ip +bcolors.WARNING + e +bcolors.ENDC)
@@ -360,7 +360,7 @@ def EmptyPort(IPv4):
             estado = False
             obj = pygeoip.GeoIP('Geo/GeoLiteCity.dat')
             location = obj.record_by_addr(str(IPv4))
-            datos = Device(str(IPv4), estado,"null", str(date), location, "null", "null", "null", "null")
+            datos = Device(str(IPv4), estado, str(date), location, "null", "null", "null", "null")
             db.Devices.insert_one(datos.toCollection())
             print('Se agrego correctamente!')
 
