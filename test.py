@@ -163,7 +163,7 @@ def Generar_IP_Ecuador_Aleatoria():
     try:
         while True: #Bucle que se cierra una ves obtenga la direcciones ipv4 de Ecuador
             ip = IPv4Address('{0}.{1}.{2}.{3}'.format(randint(0,255),randint(0,255),randint(0,255),randint(0,255)))
-            #ip = '190.152.2.0'
+            #ip = '191.100.20.14'
             #ip = '200.7.195.124' ## Conexión fallida
             #ip = '200.1.112.207' ## No se encuentra activa
             obj = pygeoip.GeoIP('Geo/GeoLiteCity.dat')
@@ -194,7 +194,7 @@ def Generar_IP_Ecuador_Aleatoria():
 #Recibe un host y los puertos que queremos comprobar y devuelve los puertos abiertos
 def OpenPort(host, puerto):
     try:
-        setdefaulttimeout(0.5) ##Tiempo de conexión segundos
+        setdefaulttimeout(1) ##Tiempo de conexión segundos
         s=socket(AF_INET, SOCK_STREAM) ##Puerto IPv4, TCP PROTOCOL
         resultado=s.connect_ex((str(host),puerto))
         if  resultado == 0:
@@ -342,7 +342,7 @@ def repetir(repeticiones):
         print( "Se ha producido un error en la cantidad de repeticiones :",+bcolors.WARNING + e +bcolors.ENDC)
         exit(1) 
 
-def NotPorts(IPv4):
+def EmptyPort(IPv4):
     try:
         estadoBd = True##Se agrege la nueva direccion IPv4
         db = get_db()# Conexiíon a la BD
@@ -412,7 +412,7 @@ def agregar(repeticiones):
                     addNewDevices(ip, portOpen, find)
                     print("Direccion Ipv4 --> "+ip+"  Puertos Abiertos--> ",portOpen)        
                 else:
-                    NotPorts(ip)
+                    EmptyPort(ip)
                 
             else:
                 print("La dirección IPv4", ip , " ya existe y es menor a los días establecidos")
