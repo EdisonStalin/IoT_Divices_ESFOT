@@ -344,7 +344,7 @@ def repetir(repeticiones):
 
 def NotPorts(IPv4):
     try:
-        estadoBd = True ##Se agrege la nueva direccion IPv4
+        estadoBd = True##Se agrege la nueva direccion IPv4
         db = get_db()# Conexiíon a la BD
         date=datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         search = db.Devices.find({'Direccion':IPv4})
@@ -352,14 +352,15 @@ def NotPorts(IPv4):
             estadoBd = r['Estado']
             print('estadoBd',estadoBd)
 
-        if(estadoBd ==False):##Actualizacíon de la Fecha
+        if(estadoBd == False ):##Actualizacíon de la Fecha
             db.Devices.update_one({"Direccion":str(IPv4)},{"$set":{"Fecha": str(date)}})
             print('Se actualizo correctamente!')
 
         else: ## Agregar
+            estado = False
             obj = pygeoip.GeoIP('Geo/GeoLiteCity.dat')
             location = obj.record_by_addr(str(IPv4))
-            datos = Device(str(IPv4), estadoBd,"null", str(date), location, "null", "null", "null", "null")
+            datos = Device(str(IPv4), estado,"null", str(date), location, "null", "null", "null", "null")
             db.Devices.insert_one(datos.toCollection())
             print('Se agrego correctamente!')
 
