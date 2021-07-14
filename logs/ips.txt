@@ -27,13 +27,15 @@
 190.154.26.138*
 191.99.135.46*
 179.60.244.15
-190.214.47.92
+190.214.47.92*espera
+181.39.85.109*
 
 
-#video
+#video multiprogramacion (hilos - logging)
+
 https://www.youtube.com/watch?v=3Rlh6uUuQqA
 
-#debugg
+#logging
 https://www.youtube.com/watch?v=NVOgXX3ZOtc
 
 #ice cream

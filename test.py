@@ -137,7 +137,6 @@ def main():
                 agregar(cant)
                 break
 
-
             if num == str(2):
                 print (bcolors.HEADER + "\n\n\t Gracias por usar el sistemas de Busqueda \n\n" + bcolors.ENDC)
                 exit(1)
@@ -162,8 +161,8 @@ def main():
 def Generar_IP_Ecuador_Aleatoria():
     try:
         while True: #Bucle que se cierra una ves obtenga la direcciones ipv4 de Ecuador
-            ip = IPv4Address('{0}.{1}.{2}.{3}'.format(randint(0,255),randint(0,255),randint(0,255),randint(0,255)))
-            #ip = '190.214.47.92'
+            #ip = IPv4Address('{0}.{1}.{2}.{3}'.format(randint(0,255),randint(0,255),randint(0,255),randint(0,255)))
+            ip = '190.214.47.92'
             obj = pygeoip.GeoIP('Geo/GeoLiteCity.dat')
             #res = obj.record_by_addr(str(ip))
             ## Validar que la direccion  ipv4 es de ecuador
@@ -215,14 +214,15 @@ def capturadepantalla(ip, puerto):
     try:
         browser = webdriver.Chrome(executable_path=r'G:\\IoT_Divices_ESFOT\\FirefoxDriver\\chromedriver.exe')
         browser.implicitly_wait(30) 
-        browser.set_page_load_timeout(200)
+        browser.set_page_load_timeout(100)
+        browser.quit()
         browser.get("http://{0}".format(ip)+":"+str(puerto))
         nombreimagen=str(ip)+","+str(puerto)+".png" ## Nombre de la Img.
         print("nombreimg", nombreimagen)
         screenshot = browser.get_screenshot_as_file(r"G:\\IoT_Divices_ESFOT\\capturas\\"+ str(nombreimagen)) ##Bool
         #print("variable bool",screenshot)
         state = screenshot
-        browser.quit()
+        #browser.quit()
     
     except selenium.common.exceptions.WebDriverException as e:
         print("Se necesita Chrome para realizar una captura de pantalla. Error: ",e)
