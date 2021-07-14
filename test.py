@@ -161,8 +161,8 @@ def main():
 def Generar_IP_Ecuador_Aleatoria():
     try:
         while True: #Bucle que se cierra una ves obtenga la direcciones ipv4 de Ecuador
-            #ip = IPv4Address('{0}.{1}.{2}.{3}'.format(randint(0,255),randint(0,255),randint(0,255),randint(0,255)))
-            ip = '190.214.47.92'
+            ip = IPv4Address('{0}.{1}.{2}.{3}'.format(randint(0,255),randint(0,255),randint(0,255),randint(0,255)))
+            #ip = '186.66.171.42'
             obj = pygeoip.GeoIP('Geo/GeoLiteCity.dat')
             #res = obj.record_by_addr(str(ip))
             ## Validar que la direccion  ipv4 es de ecuador
@@ -212,27 +212,32 @@ def OpenPort(host, puerto):
 def capturadepantalla(ip, puerto):
     setdefaulttimeout(30)
     try:
+        
         browser = webdriver.Chrome(executable_path=r'G:\\IoT_Divices_ESFOT\\FirefoxDriver\\chromedriver.exe')
         browser.implicitly_wait(30) 
-        browser.set_page_load_timeout(100)
-        browser.quit()
+        browser.set_page_load_timeout(200)
         browser.get("http://{0}".format(ip)+":"+str(puerto))
         nombreimagen=str(ip)+","+str(puerto)+".png" ## Nombre de la Img.
         print("nombreimg", nombreimagen)
         screenshot = browser.get_screenshot_as_file(r"G:\\IoT_Divices_ESFOT\\capturas\\"+ str(nombreimagen)) ##Bool
         #print("variable bool",screenshot)
         state = screenshot
-        #browser.quit()
-    
+        browser.close()
+
     except selenium.common.exceptions.WebDriverException as e:
         print("Se necesita Chrome para realizar una captura de pantalla. Error: ",e)
-        exit(1)
+        browser.quit()
+        nombreimagen = "Noimagen.png"
+        return nombreimagen
 
     except Exception as e:
         state = False
         print("Hubo un error al capturar la imagen del navegador Chrome: {0}".format(e))
         browser.quit()
-        exit(1)
+        nombreimagen = "Noimagen.png"
+        return nombreimagen
+        
+        
 
     if state:
         return nombreimagen
@@ -260,6 +265,8 @@ def addNewDevices(ip, portOpen, exist):
                     
             except Exception as e:
                 print("Error al realizar la conexión con el banner:", e)
+                banner=""
+
             connection.close()
 
             #adñadir información de la direccion Ipv4
@@ -370,6 +377,7 @@ def EmptyPort(IPv4):
 def agregar(repeticiones):
     try:
         valor =0
+        
         PortsList=[22, 23, 25, 53, 80, 81, 110, 180, 443, 873, 2323, 5000, 5001, 5094, 5150, 5160, 7547, 8080, 8100, 8443, 8883, 49152, 52869, 56000,
         1728, 3001, 8008, 8009, 10001,223, 1080, 1935, 2332, 8888, 9100,2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007,21, 554, 888, 1159, 1160, 1161,
         1435, 1518, 3389, 4550, 5005, 5400, 5550, 6550, 7000, 8000, 8081, 8090, 8150, 8866, 9000, 9650, 9999, 10000, 18004, 25001, 30001, 34567, 37777,
