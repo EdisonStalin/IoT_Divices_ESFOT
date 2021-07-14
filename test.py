@@ -163,7 +163,7 @@ def Generar_IP_Ecuador_Aleatoria():
     try:
         while True: #Bucle que se cierra una ves obtenga la direcciones ipv4 de Ecuador
             ip = IPv4Address('{0}.{1}.{2}.{3}'.format(randint(0,255),randint(0,255),randint(0,255),randint(0,255)))
-            #ip = '200.93.248.54'
+            #ip = '190.214.47.92'
             obj = pygeoip.GeoIP('Geo/GeoLiteCity.dat')
             #res = obj.record_by_addr(str(ip))
             ## Validar que la direccion  ipv4 es de ecuador
@@ -300,13 +300,13 @@ def addNewDevices(ip, portOpen, exist):
         if exist == 0: 
             estado = True
             db = get_db()
-            datos = Device(str(ip), estado, str(date), location, whois, str(dominio), str(dns), puertoList)
+            datos = Device(str(ip), estado, date, location, whois, str(dominio), str(dns), puertoList)
             db.Devices.insert_one(datos.toCollection())
 
         ##Paso el límite los días esblecidos   
         if exist == 1:           
             db = get_db()
-            db.Devices.update_one({"Direccion":str(ip)},{"$set":{"Estado":True, "Fecha": str(date),  "Whois":whois, "Dominio": str(dominio), "Dns": str(dns),"puerto": puertoList}})
+            db.Devices.update_one({"Direccion":str(ip)},{"$set":{"Estado":True, "Fecha": date,  "Whois":whois, "Dominio": str(dominio), "Dns": str(dns),"puerto": puertoList}})
 
     except Exception as e:
         print( "Se ha producido un error al agregar la información de la Dirección IPv4 proporcionada :", ip +bcolors.WARNING + e +bcolors.ENDC)
@@ -321,7 +321,7 @@ def new_search(valor):
             print (bcolors.HEADER + "\n\n\t Gracias por usar el sistemas de Busqueda \n\n" + bcolors.ENDC)
             exit(1)
     except Exception as e:
-        print( "Se ha producido un error al generar una nueva busqueda :",+bcolors.WARNING + e +bcolors.ENDC)
+        print( "Se ha producido un error al generar una nueva busqueda :"+bcolors.WARNING + e +bcolors.ENDC)
         exit(1) 
     # Si se recibe un parámetro se comprobaran tantas direcciones ip como es parámetro (limitando a 1000)
 
@@ -335,7 +335,7 @@ def repetir(repeticiones):
         return repeticiones
 
     except Exception as e:
-        print( "Se ha producido un error en la cantidad de repeticiones :",+bcolors.WARNING + e +bcolors.ENDC)
+        print( "Se ha producido un error en la cantidad de repeticiones :"+bcolors.WARNING + e +bcolors.ENDC)
         exit(1) 
 
 def EmptyPort(IPv4):
@@ -349,14 +349,14 @@ def EmptyPort(IPv4):
             print('estadoBd',estadoBd)
 
         if(estadoBd == False ):##Actualizacíon de la Fecha
-            db.Devices.update_one({"Direccion":str(IPv4)},{"$set":{"Fecha": str(date)}})
+            db.Devices.update_one({"Direccion":str(IPv4)},{"$set":{"Fecha": date}})
             print('Se actualizo correctamente!')
 
         else: ## Agregar
             estado = False
             obj = pygeoip.GeoIP('Geo/GeoLiteCity.dat')
             location = obj.record_by_addr(str(IPv4))
-            datos = Device(str(IPv4), estado, str(date), location, "null", "null", "null", "null")
+            datos = Device(str(IPv4), estado, date, location, "null", "null", "null", "null")
             db.Devices.insert_one(datos.toCollection())
             print('Se agrego correctamente!')
 
@@ -416,7 +416,7 @@ def agregar(repeticiones):
         print(bcolors.WARNING+"\n\nBusqueda Finalizada :) \n\n"+bcolors.ENDC)
 
     except Exception as e:
-        print( "Se ha producido un error al agregar o actualizar la dirección IPv4:",+bcolors.WARNING + e +bcolors.ENDC)
+        print( "Se ha producido un error al agregar o actualizar la dirección IPv4:"+bcolors.WARNING + e +bcolors.ENDC)
         exit(1)        
 
     #resultado
@@ -428,7 +428,7 @@ def final():
         new_search(valor)
 
     except Exception as e:
-        print( "Se ha producido un al validar la opción 'Ingrese Si o No': ",+bcolors.WARNING + e +bcolors.ENDC)
+        print( "Se ha producido un al validar la opción 'Ingrese Si o No': "+bcolors.WARNING + e +bcolors.ENDC)
         exit(1)
 
 
