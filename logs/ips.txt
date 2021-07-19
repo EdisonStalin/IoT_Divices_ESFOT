@@ -46,3 +46,5 @@ https://towardsdatascience.com/do-not-use-print-for-debugging-in-python-anymore-
 Ips con error de conexón
 200.63.219.141 # problem capture img. 443
 186.3.208.165 puerto:9000
+
+181.211.63.85

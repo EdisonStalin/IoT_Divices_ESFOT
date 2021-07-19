@@ -2,7 +2,6 @@ import re
 from bcolor import bcolors  #Clase contenedora de los colores.
 from atributos import Device  #Clase atributos.
 from pymongo import MongoClient, message #Conexión a la base de datos.
-
 import sys
 import os
 import getpass #Obtener información del usuario
@@ -136,11 +135,11 @@ def cabecera():
     Title = pyfiglet.figlet_format(
         "IOT ECUADOR \n", font="epic", justify="center")
     Users = ":.HERRAMIENTA DE ANÁLISIS DE VULNERABILIDADES EN DISPOSITIVOS IOT EN ECUADOR.:\n\n"
-    inicio = 'Bienvenido!  >>>' + hostname + '<<<\n'
+    inicio = 'Bienvenido!  >>>' + hostname + '<<<'
 
     print(bcolors.WARNING + Title + bcolors.ENDC)
-    print((bcolors.WARNING + typewrite(Users) + bcolors.ENDC))
-    print(bcolors.WARNING + typewrite(inicio) + bcolors.ENDC)
+    print( typewrite(Users) )
+    print(typewrite(inicio) )
 
 # Validar el número a entero.
 
@@ -159,7 +158,7 @@ def lee_entero():
 
 def typewrite(text):
     for char in text:
-        sys.stdout.write(bcolors.WARNING+char + bcolors.ENDC)
+        sys.stdout.write(char)
         sys.stdout.flush()
 
         if char != "\n":
@@ -170,29 +169,32 @@ def typewrite(text):
 
 #################
 
+def opc1():
+    pr = " \nOk!. Cúantas direcciones Ipv4 Aleatorias deseas Analizar: \n"
+    print(typewrite(pr))
+    cant = lee_entero()
+    agregar(int(cant))
+
 def main():
     try:
 
         while True:
-            pr = "Cuéntame, que deseas hacer el día de hoy? \n"
-            print(bcolors.WARNING+typewrite(pr)+bcolors.ENDC)
+            pr = "\nCuéntame, que deseas hacer el día de hoy? \n"
+            print(typewrite(pr))
 
             op1 = " 1)\tAnalizar direcciones Ipv4 en Ecuador "
-            print(bcolors.WARNING+typewrite(op1)+bcolors.ENDC)
+            print(typewrite(op1))
             sleep(1)
             op2 = " 2)\tConocer como funciona la herramienta? "
-            print(bcolors.WARNING+typewrite(op2)+bcolors.ENDC)
+            print(typewrite(op2))
             sleep(1)
             op3 = " 3)\tSalir\n"
-            print(bcolors.WARNING+typewrite(op3)+bcolors.ENDC)
+            print(typewrite(op3))
 
             num = input('Introduce el Opción: ')
 
             if num == str(1):
-                pr = " Ok!. Cúantas direcciones Ipv4 Aleatorias deseas Analizar: \n"
-                print(bcolors.OKBLUE+typewrite(pr)+bcolors.ENDC)
-                cant = lee_entero()
-                agregar(int(cant))
+                opc1()
                 break
 
             if num == str(2):
@@ -203,9 +205,8 @@ def main():
 
                 break
 
-            if num == str(2):
-                print(
-                    bcolors.HEADER + "\n\n\t Gracias por usar el sistemas de Busqueda \n\n" + bcolors.ENDC)
+            if num == str(3):
+                print("\n\n\t Gracias por usar el sistemas de Busqueda \n\n")
                 exit(1)
 
             if num == '':
@@ -398,7 +399,7 @@ def addNewDevices(ip, portOpen, exist):
 def new_search(valor):
     try:
         if ((valor == "Si") or (valor == "si") or (valor == "s") or (valor == "S")):
-            return main()
+            return opc1()
         else:
             print(bcolors.HEADER +
                   "\n\n\t Gracias por usar el sistemas de Busqueda \n\n" + bcolors.ENDC)
@@ -479,7 +480,7 @@ def agregar(repeticiones):
             ip = Generar_IP_Ecuador_Aleatoria()  # llamamos a la funcion, ip aleatorias
             ic.enable()
             Num=contador+1
-            ic(Num, Generar_IP_Ecuador_Aleatoria())
+            ic(Num, ip)
             # Comprobamos si la IPv4 está en la base de datos MongpAtlas
             findDeviceBD = find_devices(ip)
             ic.enable()
@@ -530,7 +531,7 @@ def agregar(repeticiones):
                 print("La dirección IPv4", ip,
                       " ya existe y es menor a los días establecidos")
 
-        print(bcolors.WARNING+"\n\nBusqueda Finalizada :) \n\n"+bcolors.ENDC)
+        print("\n\nBusqueda Finalizada :) \n\n")
         return final()
 
     except Exception as e:
@@ -544,8 +545,7 @@ def agregar(repeticiones):
 def final():
     
     try:
-        band = True
-        print(bcolors.WARNING+"Desea realizar una nueva busqueda \n"+bcolors.ENDC)
+        print("Desea realizar una nueva busqueda \n")
         valor = input("Ingrese Si o No: ")
         ic(new_search(valor))
         
