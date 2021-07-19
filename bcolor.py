@@ -2,11 +2,12 @@ class bcolors:
     
     HEADER = '\33[92m'
     OKBLUE = '\033[94m'
-    OKGREEN = '\033[92m'
-    WARNING = '\033[93m'
-    FAIL = '\033[91m'
+    OKGREEN = '\033[32m'
+    WARNING = '\033[93m' #AMARILLO
+    FAIL = '\033[31m' #RED
     ENDC = '\033[0m'
-    ICONS = '\33[43m'
+    TITLE = '\033[34m' #Blue
+    
 
     def disable(self):
         self.HEADER = ''
@@ -15,3 +16,4 @@ class bcolors:
         self.WARNING = ''
         self.FAIL = ''
         self.ENDC = ''
+        self.TITLE = ''
