@@ -2,6 +2,7 @@ import re
 from bcolor import bcolors  #Clase contenedora de los colores.
 from atributos import Device  #Clase atributos.
 from pymongo import MongoClient, message #Conexión a la base de datos.
+from pymongo.errors import ConnectionFailure, ServerSelectionTimeoutError
 import sys
 import os
 import getpass #Obtener información del usuario
@@ -40,6 +41,12 @@ def get_db():
 
     except ConnectionError:
         print("Error de coneccion con el servidor: --->"+client)
+    
+    except ConnectionFailure as e:
+        print("Server not available", e)
+    
+    except ServerSelectionTimeoutError as e:
+        print("Server not available timeout Error", e)
 
     return mydb
 
@@ -508,20 +515,19 @@ def agregar(repeticiones):
                             ic(port, estadoPort)
 
                     portsNumbers = len(portOpen)
-                    ic (portsNumbers)
+                    
 
                 if int(portsNumbers) != 0:
-                    Estado = addNewDevices(ip, portOpen, findDeviceBD)
-
                     ic.enable()
                     ic(portOpen)
+                    Estado = addNewDevices(ip, portOpen, findDeviceBD)
                     ic.enable()
                     ic(Estado)
 
                 else:
-                    Estado = EmptyPort(ip)
                     ic.enable()
-                    ic(portsNumbers)
+                    ic (portsNumbers)
+                    Estado = EmptyPort(ip)
                     ic.enable()
                     ic(Estado)
 
