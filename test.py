@@ -283,7 +283,7 @@ def capturadepantalla(ip, puerto):
     try:
 
         browser = webdriver.Chrome(
-            executable_path=r'C:\Users\jefer\Desktop\\Tesis\\IoT_Divices_ESFOT\\FirefoxDriver\\chromedriver.exe')
+            executable_path=r'G:\\IoT_Divices_ESFOT\\FirefoxDriver\\chromedriver.exe')
         
         browser.implicitly_wait(30)
         browser.set_page_load_timeout(30)
@@ -293,7 +293,7 @@ def capturadepantalla(ip, puerto):
         ic.enable()
         ic(nombreimagen)
         screenshot = browser.get_screenshot_as_file(
-            r"C:\\Users\\jefer\\Desktop\\Tesis\\IoT_Divices_ESFOT\\capturas\\" + str(nombreimagen))  # Bool
+            r"G:\\IoT_Divices_ESFOT\\capturas\\" + str(nombreimagen))  # Bool
         #print("variable bool",screenshot)
         state = screenshot
 
