@@ -24,7 +24,6 @@ from ipaddress import IPv4Address  #Manejos de IPv4.
 from random import randint  #Para la generación de ipv4 al azar.
 hostname = getpass.getuser() #Obtener el nombre de la maquina local.
 
-
 # Información del client de la base de datos.
 
 client = 'edison'
@@ -386,6 +385,8 @@ def addNewDevices(ip, portOpen, exist):
                            whois, str(dominio), str(dns), puertoList)
             db.Devices.insert_one(datos.toCollection())
 
+            
+
             return "Se agrego correctamente!\n"
 
         # Paso el límite los días esblecidos
@@ -567,3 +568,7 @@ if __name__ == "__main__":
     colorama.init()
     cabecera()
     main()
+
+
+
+
