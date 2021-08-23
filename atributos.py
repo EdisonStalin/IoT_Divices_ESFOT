@@ -14,7 +14,7 @@ class Device:
             "Direccion": self.ipv4,
             "Estado": self.active,
             "Fecha": self.date,
-            "Locatizacion":self.location,
+            "Localizacion":self.location,
             "Whois": self.whois,
             "Dominio": self.dominio,
             "Dns": self.dns,
