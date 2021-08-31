@@ -333,32 +333,22 @@ def capturadepantalla(ip, puerto):
         optionsChr.add_argument('--version')
 
         browser = webdriver.Chrome(
-<<<<<<< HEAD
-            executable_path=r'C:\\IoT_Divices_ESFOT\\FirefoxDriver\\chromedriver.exe', options=optionsChr)
-
-        browser.implicitly_wait(5)
-        browser.set_page_load_timeout(5)
-
-=======
-            executable_path=r'C:\\Users\\jefer\Desktop\\Tesis\\TESIS\\IoT_Divices_ESFOT\\FirefoxDriver\\chromedriver.exe')
+            executable_path=r'C:\\IoT_Divices_ESFOT\\FirefoxDriver\\chromedriver.exe')
         
         browser.implicitly_wait(30)
         browser.set_page_load_timeout(30)
->>>>>>> 218e29c5545403e8168f7186573957c349793cf2
         browser.get("http://{0}".format(ip)+":"+str(puerto))
         nombreimagen = str(ip)+","+str(puerto)+".png"  # Nombre de la Img.
         sleep(1)
         ic.enable()
         ic(nombreimagen)
         screenshot = browser.get_screenshot_as_file(
-<<<<<<< HEAD
+
             r"C:\\IoT_Divices_ESFOT\\capturas\\" + str(nombreimagen))  # Bool
         ic.disable()
         ic(screenshot)
-=======
-            r"C:\\Users\\jefer\\Desktop\\Tesis\\TESIS\\IoT_Divices_ESFOT\\capturas\\" + str(nombreimagen))  # Bool
-        #print("variable bool",screenshot)
->>>>>>> 218e29c5545403e8168f7186573957c349793cf2
+
+
         state = screenshot
         ic.disable()
         ic("screenshot", state)
