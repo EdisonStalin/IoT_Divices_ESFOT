@@ -333,10 +333,10 @@ def capturadepantalla(ip, puerto):
         optionsChr.add_argument('--version')
 
         browser = webdriver.Chrome(
-            executable_path=r'C:\\IoT_Divices_ESFOT\\FirefoxDriver\\chromedriver.exe')
+            executable_path=r'C:\\IoT_Divices_ESFOT\\FirefoxDriver\\chromedriver.exe', options=optionsChr)
         
-        browser.implicitly_wait(30)
-        browser.set_page_load_timeout(30)
+        browser.implicitly_wait(10)
+        browser.set_page_load_timeout(10)
         browser.get("http://{0}".format(ip)+":"+str(puerto))
         nombreimagen = str(ip)+","+str(puerto)+".png"  # Nombre de la Img.
         sleep(1)
@@ -569,7 +569,7 @@ def agregar(repeticiones):
 
                         if estadoPort == True:
 
-                            ic.enable()
+                            ic.disable()
                             ic(port, estadoPort)
                             portOpen.append(port)
 
