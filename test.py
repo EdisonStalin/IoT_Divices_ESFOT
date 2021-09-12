@@ -1,17 +1,10 @@
-import threading  # Multiprocesamiento.
 import logging
-from binascii import Error
-import re
-from threading import Event
-from concurrent.futures import ThreadPoolExecutor
-import icecream
 from selenium.webdriver.chrome import options
 from bcolor import bcolors  # Clase contenedora de los colores.
 from atributos import Device  # Clase atributos.
 from pymongo import MongoClient  # Conexión a la base de datos.
 from pymongo.errors import ServerSelectionTimeoutError
 import sys
-
 import getpass  # Obtener información del usuario
 # pip install alive_progress & pip install tqdm
 from alive_progress import alive_bar
@@ -25,13 +18,13 @@ from datetime import datetime, timedelta
 # Comprobar sockets abiertos.
 from socket import socket, AF_INET, SOCK_STREAM, setdefaulttimeout, getfqdn
 from selenium import webdriver  # Abrir FireFox para capturas de pantallas.
-import selenium  # Para las capturas de las pantallas.
 from ipwhois import IPWhois  # Whois.
 import pygeoip  # Para la geolcalización de las direcciones ip.
 from ipaddress import IPv4Address  # Manejos de IPv4.
 from random import randint  # Para la generación de ipv4 al azar.
 hostname = getpass.getuser()  # Obtener el nombre de la maquina local.
 
+from funcionamiento import herramienta
 
 # Generar información de diagnostico para scripts con el módulo logging.
 logging.basicConfig(filename='logs/iotInfo.log', level='INFO',
@@ -244,7 +237,7 @@ def main():
 
             if num == str(2):
 
-                Obj = "Este proyecto tiene como objetivo desarrollar una herramienta que permita realizar \nun análisis de seguridad a dispositivos IoT conectados a Internet en el Ecuador, con \nla finalidad de obtener información para conocer las vulnerabilidades más comunes y \nproblemas de seguridad a los que se enfrenta el despliegue de dispositivos IoT en Ecuador."
+                Obj = herramienta()
                 print((typewrite(Obj) + "\n"))
                 main()
 
